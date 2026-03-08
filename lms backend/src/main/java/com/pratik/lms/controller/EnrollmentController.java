@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/enroll")
+@CrossOrigin(origins = "http://localhost:5173")
 public class EnrollmentController {
 
     private final EnrollmentRepository enrollmentRepository;

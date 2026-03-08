@@ -7,9 +7,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
 
     private final UserRepository userRepository;
@@ -21,6 +23,7 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // REGISTER
     @PostMapping("/register")
     public User register(@RequestBody User user) {
 
@@ -29,5 +32,20 @@ public class AuthController {
         user.setCreatedAt(LocalDateTime.now());
 
         return userRepository.save(user);
+    }
+
+    // LOGIN
+    @PostMapping("/login")
+    public User login(@RequestBody User user) {
+
+        Optional<User> dbUser = userRepository.findByEmail(user.getEmail());
+
+        if(dbUser.isPresent() &&
+           passwordEncoder.matches(user.getPassword(), dbUser.get().getPassword())) {
+
+            return dbUser.get();
+        }
+
+        return null;
     }
 }
