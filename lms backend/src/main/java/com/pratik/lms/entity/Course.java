@@ -17,10 +17,12 @@ public class Course {
 
     private String instructor;
 
+    private String videoUrl;   // NEW FIELD
+
     // Constructor
     public Course() {}
 
-    // Getters & Setters
+    // Getters
 
     public Long getId() {
         return id;
@@ -30,23 +32,33 @@ public class Course {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getInstructor() {
         return instructor;
     }
 
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    // Setters
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public void setInstructor(String instructor) {
         this.instructor = instructor;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
     }
 }
