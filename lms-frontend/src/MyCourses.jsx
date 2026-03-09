@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 
-function Courses() {
+function MyCourses() {
 
   const [courses, setCourses] = useState([]);
 
@@ -10,36 +10,41 @@ function Courses() {
 
   useEffect(() => {
 
-    axios.get("http://localhost:8080/courses")
+    if (!user) return;
+
+    axios
+      .get(`http://localhost:8080/enroll/user/${user.id}/courses`)
       .then((response) => {
 
-        console.log(response.data);
+        console.log("My courses:", response.data);
         setCourses(response.data);
 
       })
       .catch((error) => {
+
         console.error(error);
+
       });
 
   }, []);
 
-  const enrollCourse = async (courseId) => {
+  const unenrollCourse = async (courseId) => {
 
     try {
 
-      await axios.post(
+      await axios.delete(
         `http://localhost:8080/enroll?userId=${user.id}&courseId=${courseId}`
       );
 
-      alert("Enrollment successful!");
+      alert("Unenrolled successfully");
 
-      // refresh courses page
-      window.location.reload();
+      // update UI without refreshing
+      setCourses(courses.filter(course => course.id !== courseId));
 
     } catch (error) {
 
       console.error(error);
-      alert("Enrollment failed");
+      alert("Unenroll failed");
 
     }
 
@@ -57,7 +62,7 @@ function Courses() {
   const buttonStyle = {
     marginTop: "10px",
     padding: "8px 16px",
-    backgroundColor: "#2563eb",
+    backgroundColor: "#dc2626",
     color: "white",
     border: "none",
     cursor: "pointer",
@@ -71,7 +76,11 @@ function Courses() {
 
       <div style={{ textAlign: "center", marginTop: "80px" }}>
 
-        <h2>Available Courses</h2>
+        <h2>My Courses</h2>
+
+        {courses.length === 0 && (
+          <p>No enrolled courses yet</p>
+        )}
 
         {courses.map((course, index) => (
 
@@ -85,9 +94,9 @@ function Courses() {
 
             <button
               style={buttonStyle}
-              onClick={() => enrollCourse(course.id)}
+              onClick={() => unenrollCourse(course.id)}
             >
-              Enroll
+              Unenroll
             </button>
 
           </div>
@@ -101,4 +110,4 @@ function Courses() {
 
 }
 
-export default Courses;
+export default MyCourses;
