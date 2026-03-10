@@ -19,10 +19,10 @@ function Dashboard() {
       return;
     }
 
-    axios.get("http://localhost:8080/courses")
+    axios.get("https://online-learning-managment-system-1.onrender.com/courses")
       .then(res => setTotalCourses(res.data.length));
 
-    axios.get(`http://localhost:8080/enroll/user/${user.id}/courses`)
+    axios.get(`https://online-learning-managment-system-1.onrender.com/enroll/user/${user.id}/courses`)
       .then(res => setMyCourses(res.data.length));
 
   }, []);

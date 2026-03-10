@@ -11,7 +11,7 @@ function Courses() {
 
   useEffect(() => {
 
-    axios.get("http://localhost:8080/courses")
+    axios.get("https://online-learning-managment-system-1.onrender.com/courses")
       .then((response) => {
         setCourses(response.data);
       })
@@ -31,7 +31,7 @@ function Courses() {
     try {
 
       await axios.post(
-        `http://localhost:8080/enroll?userId=${user.id}&courseId=${courseId}`
+        `https://online-learning-managment-system-1.onrender.com/enroll?userId=${user.id}&courseId=${courseId}`
       );
 
       alert("Enrollment successful!");
@@ -121,18 +121,18 @@ function Courses() {
             <div
               key={course.id + "-" + index}
               style={cardStyle}
-              onMouseEnter={(e)=>hoverCard(e,1.03)}
-              onMouseLeave={(e)=>hoverCard(e,1)}
+              onMouseEnter={(e) => hoverCard(e, 1.03)}
+              onMouseLeave={(e) => hoverCard(e, 1)}
             >
 
               <h3>{course.title}</h3>
 
-              <p style={{opacity:"0.85"}}>
+              <p style={{ opacity: "0.85" }}>
                 {course.description}
               </p>
 
               <div style={instructorStyle}>
-                <FaUserTie/>
+                <FaUserTie />
                 <span>{course.instructor}</span>
               </div>
 
@@ -148,11 +148,11 @@ function Courses() {
 
               <button
                 style={buttonStyle}
-                onMouseEnter={(e)=>hoverBtn(e,1.08)}
-                onMouseLeave={(e)=>hoverBtn(e,1)}
+                onMouseEnter={(e) => hoverBtn(e, 1.08)}
+                onMouseLeave={(e) => hoverBtn(e, 1)}
                 onClick={() => enrollCourse(course.id)}
               >
-                <FaPlayCircle/>
+                <FaPlayCircle />
                 Enroll
               </button>
 

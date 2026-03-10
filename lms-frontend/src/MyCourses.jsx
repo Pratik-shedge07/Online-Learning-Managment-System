@@ -14,7 +14,7 @@ function MyCourses() {
     if (!user) return;
 
     axios
-      .get(`http://localhost:8080/enroll/user/${user.id}/courses`)
+    axios.get(`https://online-learning-managment-system-1.onrender.com/enroll/user/${user.id}/courses`)
       .then((response) => {
         setCourses(response.data);
       })
@@ -29,7 +29,7 @@ function MyCourses() {
     try {
 
       await axios.delete(
-        `http://localhost:8080/enroll?userId=${user.id}&courseId=${courseId}`
+        `https://online-learning-managment-system-1.onrender.com/enroll?userId=${user.id}&courseId=${courseId}`
       );
 
       alert("Unenrolled successfully");
@@ -119,12 +119,12 @@ function MyCourses() {
 
       <div style={pageStyle}>
 
-        <h2 style={{fontSize:"28px",marginBottom:"10px"}}>
+        <h2 style={{ fontSize: "28px", marginBottom: "10px" }}>
           My Courses
         </h2>
 
         {courses.length === 0 && (
-          <div style={{opacity:"0.7",marginTop:"40px"}}>
+          <div style={{ opacity: "0.7", marginTop: "40px" }}>
             <h3>No courses enrolled</h3>
             <p>Start learning by enrolling in a course</p>
           </div>
@@ -137,18 +137,18 @@ function MyCourses() {
             <div
               key={course.id + "-" + index}
               style={cardStyle}
-              onMouseEnter={(e)=>hoverCard(e,1.04)}
-              onMouseLeave={(e)=>hoverCard(e,1)}
+              onMouseEnter={(e) => hoverCard(e, 1.04)}
+              onMouseLeave={(e) => hoverCard(e, 1)}
             >
 
               <h3>{course.title}</h3>
 
-              <p style={{opacity:"0.85",fontSize:"14px"}}>
+              <p style={{ opacity: "0.85", fontSize: "14px" }}>
                 {course.description}
               </p>
 
               <div style={instructorStyle}>
-                <FaUserTie/>
+                <FaUserTie />
                 <span>{course.instructor}</span>
               </div>
 
@@ -163,11 +163,11 @@ function MyCourses() {
 
               <button
                 style={buttonStyle}
-                onMouseEnter={(e)=>hoverBtn(e,1.08)}
-                onMouseLeave={(e)=>hoverBtn(e,1)}
+                onMouseEnter={(e) => hoverBtn(e, 1.08)}
+                onMouseLeave={(e) => hoverBtn(e, 1)}
                 onClick={() => unenrollCourse(course.id)}
               >
-                <FaTrash/>
+                <FaTrash />
                 Unenroll
               </button>
 
