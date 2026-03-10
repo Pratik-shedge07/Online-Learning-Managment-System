@@ -22,7 +22,7 @@ function Dashboard() {
     axios.get("https://online-learning-managment-system-1.onrender.com/courses")
       .then(res => setTotalCourses(res.data.length));
 
-    axios.get(`https://online-learning-managment-system-1.onrender.com/enroll/user/${user.id}/courses`)
+    axios.get("https://online-learning-managment-system-1.onrender.com/courses")
       .then(res => setMyCourses(res.data.length));
 
   }, []);
@@ -98,9 +98,9 @@ function Dashboard() {
 
       <div style={pageStyle}>
 
-        <h1 style={{marginBottom:"10px"}}>Dashboard</h1>
+        <h1 style={{ marginBottom: "10px" }}>Dashboard</h1>
 
-        <p style={{opacity:"0.8"}}>
+        <p style={{ opacity: "0.8" }}>
           Welcome back, <b>{user?.name}</b>
         </p>
 
@@ -110,8 +110,8 @@ function Dashboard() {
 
           <div
             style={cardStyle}
-            onMouseEnter={(e)=>hoverCard(e,1.05)}
-            onMouseLeave={(e)=>hoverCard(e,1)}
+            onMouseEnter={(e) => hoverCard(e, 1.05)}
+            onMouseLeave={(e) => hoverCard(e, 1)}
           >
 
             <FaBookOpen style={iconStyle} />
@@ -126,8 +126,8 @@ function Dashboard() {
 
           <div
             style={cardStyle}
-            onMouseEnter={(e)=>hoverCard(e,1.05)}
-            onMouseLeave={(e)=>hoverCard(e,1)}
+            onMouseEnter={(e) => hoverCard(e, 1.05)}
+            onMouseLeave={(e) => hoverCard(e, 1)}
           >
 
             <FaUserGraduate style={iconStyle} />
@@ -148,8 +148,8 @@ function Dashboard() {
 
           <button
             style={buttonStyle}
-            onMouseEnter={(e)=>hoverBtn(e,1.07)}
-            onMouseLeave={(e)=>hoverBtn(e,1)}
+            onMouseEnter={(e) => hoverBtn(e, 1.07)}
+            onMouseLeave={(e) => hoverBtn(e, 1)}
             onClick={() => navigate("/courses")}
           >
             Browse Courses
@@ -157,8 +157,8 @@ function Dashboard() {
 
           <button
             style={buttonStyle}
-            onMouseEnter={(e)=>hoverBtn(e,1.07)}
-            onMouseLeave={(e)=>hoverBtn(e,1)}
+            onMouseEnter={(e) => hoverBtn(e, 1.07)}
+            onMouseLeave={(e) => hoverBtn(e, 1)}
             onClick={() => navigate("/my-courses")}
           >
             My Learning
