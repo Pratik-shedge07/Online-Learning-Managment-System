@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./Navbar";
+import { FaBookOpen, FaUserGraduate } from "react-icons/fa";
 
 function Dashboard() {
 
   const navigate = useNavigate();
-
   const user = JSON.parse(localStorage.getItem("user"));
 
   const [totalCourses, setTotalCourses] = useState(0);
@@ -19,34 +19,76 @@ function Dashboard() {
       return;
     }
 
-    // get total courses
     axios.get("http://localhost:8080/courses")
-      .then(res => {
-        setTotalCourses(res.data.length);
-      });
+      .then(res => setTotalCourses(res.data.length));
 
-    // get enrolled courses
     axios.get(`http://localhost:8080/enroll/user/${user.id}/courses`)
-      .then(res => {
-        setMyCourses(res.data.length);
-      });
+      .then(res => setMyCourses(res.data.length));
 
   }, []);
 
-  const cardStyle = {
-    background: "#f4f4f4",
-    padding: "30px",
-    borderRadius: "10px",
-    width: "220px",
+  const pageStyle = {
     textAlign: "center",
-    boxShadow: "0px 3px 8px rgba(0,0,0,0.1)"
+    marginTop: "80px",
+    padding: "20px"
   };
 
-  const containerStyle = {
+  const gridStyle = {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
+    gap: "25px",
+    maxWidth: "800px",
+    margin: "40px auto"
+  };
+
+  const cardStyle = {
+    background: "var(--card)",
+    padding: "30px",
+    borderRadius: "14px",
+    boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+    transition: "all 0.3s ease",
+    cursor: "pointer"
+  };
+
+  const iconStyle = {
+    fontSize: "28px",
+    marginBottom: "10px",
+    color: "var(--primary)"
+  };
+
+  const numberStyle = {
+    fontSize: "32px",
+    fontWeight: "600",
+    background: "linear-gradient(90deg,var(--primary),var(--accent))",
+    WebkitBackgroundClip: "text",
+    color: "transparent"
+  };
+
+  const buttonContainer = {
+    marginTop: "30px",
     display: "flex",
     justifyContent: "center",
-    gap: "30px",
-    marginTop: "40px"
+    gap: "20px",
+    flexWrap: "wrap"
+  };
+
+  const buttonStyle = {
+    padding: "12px 22px",
+    borderRadius: "10px",
+    border: "none",
+    cursor: "pointer",
+    fontSize: "15px",
+    background: "linear-gradient(135deg,var(--primary),var(--accent))",
+    color: "white",
+    transition: "all 0.25s ease"
+  };
+
+  const hoverCard = (e, scale) => {
+    e.currentTarget.style.transform = `scale(${scale})`;
+  };
+
+  const hoverBtn = (e, scale) => {
+    e.currentTarget.style.transform = `scale(${scale})`;
   };
 
   return (
@@ -54,40 +96,72 @@ function Dashboard() {
     <>
       <Navbar />
 
-      <div style={{ textAlign: "center", marginTop: "60px" }}>
+      <div style={pageStyle}>
 
-        <h1>Dashboard</h1>
+        <h1 style={{marginBottom:"10px"}}>Dashboard</h1>
 
-        <p>Welcome {user?.name}</p>
+        <p style={{opacity:"0.8"}}>
+          Welcome back, <b>{user?.name}</b>
+        </p>
 
-        <div style={containerStyle}>
+        {/* Stats Cards */}
 
-          <div style={cardStyle}>
+        <div style={gridStyle}>
+
+          <div
+            style={cardStyle}
+            onMouseEnter={(e)=>hoverCard(e,1.05)}
+            onMouseLeave={(e)=>hoverCard(e,1)}
+          >
+
+            <FaBookOpen style={iconStyle} />
+
             <h3>Available Courses</h3>
-            <h2>{totalCourses}</h2>
+
+            <div style={numberStyle}>
+              {totalCourses}
+            </div>
+
           </div>
 
-          <div style={cardStyle}>
+          <div
+            style={cardStyle}
+            onMouseEnter={(e)=>hoverCard(e,1.05)}
+            onMouseLeave={(e)=>hoverCard(e,1)}
+          >
+
+            <FaUserGraduate style={iconStyle} />
+
             <h3>My Courses</h3>
-            <h2>{myCourses}</h2>
+
+            <div style={numberStyle}>
+              {myCourses}
+            </div>
+
           </div>
 
         </div>
 
-        <div style={{marginTop:"40px"}}>
+        {/* Navigation Buttons */}
+
+        <div style={buttonContainer}>
 
           <button
-            style={{margin:"10px", padding:"10px 18px"}}
+            style={buttonStyle}
+            onMouseEnter={(e)=>hoverBtn(e,1.07)}
+            onMouseLeave={(e)=>hoverBtn(e,1)}
             onClick={() => navigate("/courses")}
           >
-            View Courses
+            Browse Courses
           </button>
 
           <button
-            style={{margin:"10px", padding:"10px 18px"}}
+            style={buttonStyle}
+            onMouseEnter={(e)=>hoverBtn(e,1.07)}
+            onMouseLeave={(e)=>hoverBtn(e,1)}
             onClick={() => navigate("/my-courses")}
           >
-            My Courses
+            My Learning
           </button>
 
         </div>
@@ -96,7 +170,6 @@ function Dashboard() {
 
     </>
   );
-
 }
 
 export default Dashboard;

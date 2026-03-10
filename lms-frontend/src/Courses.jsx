@@ -1,21 +1,19 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Navbar from "./Navbar";
+import { FaUserTie, FaPlayCircle } from "react-icons/fa";
 
 function Courses() {
 
   const [courses, setCourses] = useState([]);
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
 
     axios.get("http://localhost:8080/courses")
       .then((response) => {
-
-        console.log(response.data);
         setCourses(response.data);
-
       })
       .catch((error) => {
         console.error(error);
@@ -25,6 +23,11 @@ function Courses() {
 
   const enrollCourse = async (courseId) => {
 
+    if (!user?.id) {
+      alert("Please login first");
+      return;
+    }
+
     try {
 
       await axios.post(
@@ -32,8 +35,6 @@ function Courses() {
       );
 
       alert("Enrollment successful!");
-
-      // refresh courses page
       window.location.reload();
 
     } catch (error) {
@@ -45,58 +46,124 @@ function Courses() {
 
   };
 
-  const courseBox = {
-    background: "#f4f4f4",
+  const pageStyle = {
+    textAlign: "center",
+    marginTop: "80px",
+    padding: "20px"
+  };
+
+  const gridStyle = {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))",
+    gap: "25px",
+    maxWidth: "1200px",
+    margin: "40px auto"
+  };
+
+  const cardStyle = {
+    background: "var(--card)",
     padding: "20px",
-    margin: "10px auto",
-    width: "320px",
-    borderRadius: "8px",
-    boxShadow: "0px 2px 6px rgba(0,0,0,0.1)"
+    borderRadius: "14px",
+    boxShadow: "0 10px 25px rgba(0,0,0,0.25)",
+    transition: "all 0.3s ease",
+    textAlign: "left"
+  };
+
+  const videoStyle = {
+    width: "100%",
+    height: "180px",
+    borderRadius: "10px",
+    marginTop: "10px"
+  };
+
+  const instructorStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+    marginTop: "8px",
+    opacity: "0.8"
   };
 
   const buttonStyle = {
-    marginTop: "10px",
-    padding: "8px 16px",
-    backgroundColor: "#2563eb",
-    color: "white",
+    marginTop: "12px",
+    padding: "10px 16px",
+    borderRadius: "8px",
     border: "none",
     cursor: "pointer",
-    borderRadius: "4px"
+    background: "linear-gradient(135deg,var(--primary),var(--accent))",
+    color: "white",
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+    transition: "all 0.25s ease"
+  };
+
+  const hoverCard = (e, scale) => {
+    e.currentTarget.style.transform = `scale(${scale})`;
+  };
+
+  const hoverBtn = (e, scale) => {
+    e.currentTarget.style.transform = `scale(${scale})`;
   };
 
   return (
-
     <>
       <Navbar />
 
-      <div style={{ textAlign: "center", marginTop: "80px" }}>
+      <div style={pageStyle}>
 
-        <h2>Available Courses</h2>
+        <h2>Explore Courses</h2>
 
-        {courses.map((course, index) => (
+        <div style={gridStyle}>
 
-          <div key={course.id + "-" + index} style={courseBox}>
+          {courses.map((course, index) => (
 
-            <h3>{course.title}</h3>
-
-            <p>{course.description}</p>
-
-            <p><b>Instructor:</b> {course.instructor}</p>
-
-            <button
-              style={buttonStyle}
-              onClick={() => enrollCourse(course.id)}
+            <div
+              key={course.id + "-" + index}
+              style={cardStyle}
+              onMouseEnter={(e)=>hoverCard(e,1.03)}
+              onMouseLeave={(e)=>hoverCard(e,1)}
             >
-              Enroll
-            </button>
 
-          </div>
+              <h3>{course.title}</h3>
 
-        ))}
+              <p style={{opacity:"0.85"}}>
+                {course.description}
+              </p>
+
+              <div style={instructorStyle}>
+                <FaUserTie/>
+                <span>{course.instructor}</span>
+              </div>
+
+              {course.videoUrl && (
+                <iframe
+                  src={course.videoUrl}
+                  title="Course Video"
+                  frameBorder="0"
+                  allowFullScreen
+                  style={videoStyle}
+                ></iframe>
+              )}
+
+              <button
+                style={buttonStyle}
+                onMouseEnter={(e)=>hoverBtn(e,1.08)}
+                onMouseLeave={(e)=>hoverBtn(e,1)}
+                onClick={() => enrollCourse(course.id)}
+              >
+                <FaPlayCircle/>
+                Enroll
+              </button>
+
+            </div>
+
+          ))}
+
+        </div>
 
       </div>
     </>
-
   );
 
 }
