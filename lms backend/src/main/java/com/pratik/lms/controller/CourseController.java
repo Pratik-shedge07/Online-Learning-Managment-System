@@ -28,4 +28,8 @@ public class CourseController {
     public List<Course> getCourses() {
         return courseRepository.findAll();
     }
+    @DeleteMapping("/{id}")
+public void deleteCourse(@PathVariable Long id) {
+    courseRepository.deleteById(id);
+}
 }
