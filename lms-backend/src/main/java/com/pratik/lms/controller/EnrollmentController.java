@@ -13,8 +13,10 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/enroll")
-@CrossOrigin(origins = "http://localhost:5173")
-public class EnrollmentController {
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://online-learning-managment-system.vercel.app"
+})public class EnrollmentController {
 
     private final EnrollmentRepository enrollmentRepository;
     private final UserRepository userRepository;
