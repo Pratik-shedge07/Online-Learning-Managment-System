@@ -16,7 +16,7 @@ function Courses() {
         setCourses(response.data);
       })
       .catch((error) => {
-        console.error(error);
+        console.error("Error fetching courses:", error);
       });
 
   }, []);
@@ -35,7 +35,6 @@ function Courses() {
       );
 
       alert("Enrollment successful!");
-      window.location.reload();
 
     } catch (error) {
 
@@ -136,9 +135,9 @@ function Courses() {
                 <span>{course.instructor}</span>
               </div>
 
-              {course.videoUrl && (
+              {course.video_url && (
                 <iframe
-                  src={course.videoUrl}
+                  src={course.video_url}
                   title="Course Video"
                   frameBorder="0"
                   allowFullScreen
