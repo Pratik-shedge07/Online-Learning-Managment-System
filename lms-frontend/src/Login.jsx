@@ -4,8 +4,14 @@ import { useNavigate } from "react-router-dom";
 
 function Login() {
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [flip, setFlip] = useState(false);
+
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+
+  const [name, setName] = useState("");
+  const [regEmail, setRegEmail] = useState("");
+  const [regPassword, setRegPassword] = useState("");
 
   const navigate = useNavigate();
 
@@ -14,35 +20,57 @@ function Login() {
     try {
 
       const response = await axios.post(
-  "https://online-learning-managment-system-1.onrender.com/auth/login",
+        "https://online-learning-managment-system-1.onrender.com/auth/login",
         {
-          email: email,
-          password: password
+          email: loginEmail,
+          password: loginPassword
         }
       );
 
-      if(response.data){
+      localStorage.setItem("user", JSON.stringify(response.data));
 
-        // save logged user
-        localStorage.setItem("user", JSON.stringify(response.data));
+      alert("Login Successful");
 
-        alert("Login successful");
+      navigate("/dashboard");
 
-        navigate("/dashboard");
+    } catch (error) {
 
-      } else {
-
-        alert("Invalid email or password");
-
+      if(error.response){
+        alert(error.response.data);
+      }else{
+        alert("Server Error");
       }
 
-    } catch(error){
-  if(error.response){
-     alert(error.response.data);
-  }else{
-     alert("Server error");
-  }
-}
+    }
+
+  };
+
+  const handleRegister = async () => {
+
+    try {
+
+      await axios.post(
+        "https://online-learning-managment-system-1.onrender.com/auth/register",
+        {
+          name: name,
+          email: regEmail,
+          password: regPassword
+        }
+      );
+
+      alert("Registration Successful");
+
+      setFlip(false);
+
+    } catch (error) {
+
+      if(error.response){
+        alert(error.response.data);
+      }else{
+        alert("Server Error");
+      }
+
+    }
 
   };
 
@@ -51,31 +79,55 @@ function Login() {
     justifyContent: "center",
     alignItems: "center",
     height: "100vh",
-    background: "#f4f6f9"
+    background: "#f1f5f9",
+    perspective: "1000px"
   };
 
-  const box = {
+  const card = {
+    width: "360px",
+    height: "380px",
+    position: "relative",
+    transformStyle: "preserve-3d",
+    transition: "0.6s",
+    transform: flip ? "rotateY(180deg)" : "rotateY(0deg)"
+  };
+
+  const side = {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    backfaceVisibility: "hidden",
     background: "white",
     padding: "40px",
-    borderRadius: "8px",
-    width: "320px",
-    textAlign: "center",
-    boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
+    borderRadius: "10px",
+    boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+    textAlign: "center"
+  };
+
+  const back = {
+    ...side,
+    transform: "rotateY(180deg)"
   };
 
   const input = {
     width: "100%",
     padding: "10px",
-    marginTop: "10px"
+    marginTop: "12px"
   };
 
   const button = {
     width: "100%",
     padding: "10px",
     marginTop: "20px",
-    backgroundColor: "#2563eb",
+    background: "#2563eb",
     color: "white",
     border: "none",
+    cursor: "pointer"
+  };
+
+  const link = {
+    marginTop: "15px",
+    color: "#2563eb",
     cursor: "pointer"
   };
 
@@ -83,29 +135,83 @@ function Login() {
 
     <div style={container}>
 
-      <div style={box}>
+      <div style={card}>
 
-        <h2>LMS Login</h2>
+        {/* LOGIN */}
 
-        <input
-          style={input}
-          placeholder="Email"
-          onChange={(e)=>setEmail(e.target.value)}
-        />
+        <div style={side}>
 
-        <input
-          style={input}
-          type="password"
-          placeholder="Password"
-          onChange={(e)=>setPassword(e.target.value)}
-        />
+          <h2>LMS Login</h2>
 
-        <button
-          style={button}
-          onClick={handleLogin}
-        >
-          Login
-        </button>
+          <input
+            style={input}
+            placeholder="Email"
+            onChange={(e)=>setLoginEmail(e.target.value)}
+          />
+
+          <input
+            style={input}
+            type="password"
+            placeholder="Password"
+            onChange={(e)=>setLoginPassword(e.target.value)}
+          />
+
+          <button
+            style={button}
+            onClick={handleLogin}
+          >
+            Login
+          </button>
+
+          <p
+            style={link}
+            onClick={()=>setFlip(true)}
+          >
+            New user? Register
+          </p>
+
+        </div>
+
+        {/* REGISTER */}
+
+        <div style={back}>
+
+          <h2>Create Account</h2>
+
+          <input
+            style={input}
+            placeholder="Name"
+            onChange={(e)=>setName(e.target.value)}
+          />
+
+          <input
+            style={input}
+            placeholder="Email"
+            onChange={(e)=>setRegEmail(e.target.value)}
+          />
+
+          <input
+            style={input}
+            type="password"
+            placeholder="Password"
+            onChange={(e)=>setRegPassword(e.target.value)}
+          />
+
+          <button
+            style={button}
+            onClick={handleRegister}
+          >
+            Register
+          </button>
+
+          <p
+            style={link}
+            onClick={()=>setFlip(false)}
+          >
+            Already have account? Login
+          </p>
+
+        </div>
 
       </div>
 
