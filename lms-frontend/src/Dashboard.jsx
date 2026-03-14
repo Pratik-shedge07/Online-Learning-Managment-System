@@ -19,13 +19,35 @@ function Dashboard() {
       return;
     }
 
-    axios.get("https://online-learning-managment-system-1.onrender.com/courses")
-      .then(res => setTotalCourses(res.data.length));
+    const fetchCourses = async () => {
+      try {
 
-    axios.get("https://online-learning-managment-system-1.onrender.com/courses")
-      .then(res => setMyCourses(res.data.length));
+        const res = await axios.get(
+          "https://online-learning-managment-system-1.onrender.com/courses"
+        );
 
-  }, []);
+        const courses = res.data;
+
+        // Total courses
+        setTotalCourses(courses.length);
+
+        // Filter courses enrolled by this user
+        const my = courses.filter(
+          (course) => course.userId === user.id
+        );
+
+        setMyCourses(my.length);
+
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+
+    fetchCourses();
+
+  }, [navigate, user]);
+
+
 
   const pageStyle = {
     textAlign: "center",
@@ -91,8 +113,9 @@ function Dashboard() {
     e.currentTarget.style.transform = `scale(${scale})`;
   };
 
-  return (
 
+
+  return (
     <>
       <Navbar />
 
@@ -107,6 +130,8 @@ function Dashboard() {
         {/* Stats Cards */}
 
         <div style={gridStyle}>
+
+          {/* Available Courses */}
 
           <div
             style={cardStyle}
@@ -123,6 +148,9 @@ function Dashboard() {
             </div>
 
           </div>
+
+
+          {/* My Courses */}
 
           <div
             style={cardStyle}
@@ -141,6 +169,7 @@ function Dashboard() {
           </div>
 
         </div>
+
 
         {/* Navigation Buttons */}
 
@@ -167,7 +196,6 @@ function Dashboard() {
         </div>
 
       </div>
-
     </>
   );
 }
