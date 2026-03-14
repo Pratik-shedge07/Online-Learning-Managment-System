@@ -3,6 +3,7 @@ package com.pratik.lms.controller;
 import com.pratik.lms.entity.Role;
 import com.pratik.lms.entity.User;
 import com.pratik.lms.repository.UserRepository;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final UserRepository userRepository;
@@ -19,13 +20,22 @@ public class AuthController {
 
     public AuthController(UserRepository userRepository,
                           PasswordEncoder passwordEncoder) {
+
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    // REGISTER
+    // ======================
+    // REGISTER USER
+    // ======================
     @PostMapping("/register")
     public User register(@RequestBody User user) {
+
+        Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
+
+        if(existingUser.isPresent()) {
+            throw new RuntimeException("User already exists");
+        }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.STUDENT);
@@ -34,18 +44,24 @@ public class AuthController {
         return userRepository.save(user);
     }
 
-    // LOGIN
+    // ======================
+    // LOGIN USER
+    // ======================
     @PostMapping("/login")
-    public User login(@RequestBody User user) {
+    public User login(@RequestBody User loginUser) {
 
-        Optional<User> dbUser = userRepository.findByEmail(user.getEmail());
+        Optional<User> dbUser = userRepository.findByEmail(loginUser.getEmail());
 
-        if(dbUser.isPresent() &&
-           passwordEncoder.matches(user.getPassword(), dbUser.get().getPassword())) {
-
-            return dbUser.get();
+        if(dbUser.isEmpty()) {
+            throw new RuntimeException("User not found");
         }
 
-        return null;
+        User user = dbUser.get();
+
+        if(!passwordEncoder.matches(loginUser.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        return user;
     }
 }
