@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/auth")
@@ -46,24 +48,25 @@ public class AuthController {
     // ======================
     // LOGIN USER
     // ======================
-    @PostMapping("/login")
-    public User login(@RequestBody User loginUser) {
+ @PostMapping("/login")
+public ResponseEntity<?> login(@RequestBody User loginUser) {
 
-        Optional<User> dbUser = userRepository.findByEmail(loginUser.getEmail());
+    Optional<User> dbUser = userRepository.findByEmail(loginUser.getEmail());
 
-        if(dbUser.isEmpty()) {
-            throw new RuntimeException("User not found");
-        }
-
-        User user = dbUser.get();
-
-        if(!passwordEncoder.matches(loginUser.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
-
-        // hide password before returning
-        user.setPassword(null);
-
-        return user;
+    if(dbUser.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("User not found");
     }
+
+    User user = dbUser.get();
+
+    if(!passwordEncoder.matches(loginUser.getPassword(), user.getPassword())) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Invalid password");
+    }
+
+    user.setPassword(null);
+
+    return ResponseEntity.ok(user);
+}
 }

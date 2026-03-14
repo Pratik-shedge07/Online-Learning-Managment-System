@@ -37,11 +37,12 @@ function Login() {
       }
 
     } catch(error){
-
-      console.log(error);
-      alert("Login failed");
-
-    }
+  if(error.response){
+     alert(error.response.data);
+  }else{
+     alert("Server error");
+  }
+}
 
   };
 
