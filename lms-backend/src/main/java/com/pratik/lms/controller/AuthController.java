@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final UserRepository userRepository;
@@ -19,11 +20,13 @@ public class AuthController {
 
     public AuthController(UserRepository userRepository,
                           PasswordEncoder passwordEncoder) {
-
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
+    // ======================
+    // REGISTER USER
+    // ======================
     @PostMapping("/register")
     public User register(@RequestBody User user) {
 
@@ -40,23 +43,27 @@ public class AuthController {
         return userRepository.save(user);
     }
 
+    // ======================
+    // LOGIN USER
+    // ======================
     @PostMapping("/login")
-public User login(@RequestBody User loginUser) {
+    public User login(@RequestBody User loginUser) {
 
-    Optional<User> dbUser = userRepository.findByEmail(loginUser.getEmail());
+        Optional<User> dbUser = userRepository.findByEmail(loginUser.getEmail());
 
-    if(dbUser.isEmpty()) {
-        throw new RuntimeException("User not found");
+        if(dbUser.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        User user = dbUser.get();
+
+        if(!passwordEncoder.matches(loginUser.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        // hide password before returning
+        user.setPassword(null);
+
+        return user;
     }
-
-    User user = dbUser.get();
-
-    if(!passwordEncoder.matches(loginUser.getPassword(), user.getPassword())) {
-        throw new RuntimeException("Invalid password");
-    }
-
-    user.setPassword(null);
-
-    return user;
-}
 }
